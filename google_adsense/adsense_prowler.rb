@@ -13,7 +13,7 @@ require 'prowly'
 begin
   config = YAML::load(File.open(".prowl.yml"))
 rescue
-  puts "ERROR: Cannot find .prowl.yml configuration file"
+  puts "ERROR: Cannot open .prowl.yml configuration file"
   exit
 end
 
