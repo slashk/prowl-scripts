@@ -17,11 +17,9 @@ rescue
   exit
 end
 
-#### CHANGE THE VARIABLE BELOW
 ADSENSE_LOGIN = config["adsense_login"]
 ADSENSE_PASS = config["adsense_password"]
 PROWL_API_KEY = config["prowl_api_key"]
-### DON'T CHANGE ANYTHING BELOW HERE
 
 
 SERVICE_LOGIN_BOX_URL = "https://www.google.com/accounts/ServiceLoginBox?service=adsense&ltmpl=login&ifr=true&rm=hide&fpui=3&nui=15&alwf=true&passive=true&continue=https%3A%2F%2Fwww.google.com%2Fadsense%2Flogin-box-gaiaauth&followup=https%3A%2F%2Fwww.google.com%2Fadsense%2Flogin-box-gaiaauth&hl=en_US"
@@ -39,11 +37,11 @@ form.Passwd = ADSENSE_PASS
 
 # submit login page, then click through the next page to get to account summary
 page = agent.submit form
-page = agent.get "https://www.google.com/accounts/CheckCookie?continue=https%3A%2F%2Fwww.google.com%2Fadsense%2Flogin-box-gaiaauth&followup=https%3A%2F%2Fwww.google.com%2Fadsense%2Flogin-box-gaiaauth&hl=en_US&service=adsense&ltmpl=login&chtml=LoginDoneHtml"
+page = agent.get "https://www.google.com/accounts/CheckCookie?continue=https%3A%2F%2Fwww.google.com%2Fadsense%2Flogin-box-gaiaauth&followup=https%3A%2F%2Fwww.google.com%2Fadsense%2Flogin-box-gaiaauth&hl=en_US&service=adsense&ltmpl=login&chtml=LoginDoneHtml" 
 
 # parse account summary page today's for booty
 page = agent.get TODAY_URL
-todays_booty = page.search("//table[@id='summarytable']//tfoot//td/text()").last
+todays_booty = page.search("//div[@id='content']//table//h1//span//text()").to_s.match('\$[0-9]+\.[0-9][0-9]').to_s
 
 # parse account summary page for this month's booty
 page = agent.get MONTH_URL
