@@ -39,13 +39,21 @@ form.Passwd = ADSENSE_PASS
 page = agent.submit form
 page = agent.get "https://www.google.com/accounts/CheckCookie?continue=https%3A%2F%2Fwww.google.com%2Fadsense%2Flogin-box-gaiaauth&followup=https%3A%2F%2Fwww.google.com%2Fadsense%2Flogin-box-gaiaauth&hl=en_US&service=adsense&ltmpl=login&chtml=LoginDoneHtml" 
 
+puts page.body
+
 # parse account summary page today's for booty
-page = agent.get TODAY_URL
-todays_booty = page.search("//div[@id='content']//table//h1//span//text()").to_s.match('\$[0-9]+\.[0-9][0-9]').to_s
+# page = agent.get TODAY_URL
+# todays_booty = page.search("//div[@id='content']//table//h1//span//text()").to_s.match('\$[0-9]+\.[0-9][0-9]').to_s
+todays_booty = page.search("//div[@class='syn-home-overview-earnings-line']")
+
+# .to_s.match('\$[0-9]+\.[0-9][0-9]').to_s
+
+puts todays_booty.count
+puts todays_booty.to_s
 
 # parse account summary page for this month's booty
-page = agent.get MONTH_URL
-months_booty = page.search("//table[@id='summarytable']//tfoot//td/text()").last
+# page = agent.get MONTH_URL
+# months_booty = page.search("//table[@id='summarytable']//tfoot//td/text()").last
 
 # send prowl notification to iphone (log to screen if fails)
 notif = Prowly::Notification.new(
