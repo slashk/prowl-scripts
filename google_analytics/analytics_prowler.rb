@@ -32,8 +32,12 @@ session = Garb::Session.login(config["analytics_login"], config["analytics_passw
 
 config["web_properties"].each do |property_id|
   profile = Garb::Management::Profile.all.detect {|p| p.web_property_id == property_id}
-  views = profile.pageviews(:start_date => Date.today, :end_date => Date.today)
-  message << "#{profile.title}: #{views.first.visitors}/#{views.first.pageviews}\n"
+  views = Pageviews.results(profile, :start_date => Date.today, :end_date => Date.today)
+  # views = profile.pageviews(:start_date => Date.today, :end_date => Date.today)
+  begin
+    message << "#{profile.title}: #{views.first.visitors}/#{views.first.pageviews}\n"
+  rescue
+  end
 end
 
 notif = Prowly::Notification.new(
