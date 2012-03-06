@@ -20,6 +20,13 @@ class Pageviews
   metrics :pageviews, :visitors
 end
 
+class Domis
+  extend Garb::Model
+  
+  metrics :pageviews
+  dimensions :networkDomain
+end
+
 begin
   config = YAML::load(File.open(".prowl.yml"))
 rescue
@@ -33,11 +40,14 @@ session = Garb::Session.login(config["analytics_login"], config["analytics_passw
 config["web_properties"].each do |property_id|
   profile = Garb::Management::Profile.all.detect {|p| p.web_property_id == property_id}
   views = Pageviews.results(profile, :start_date => Date.today, :end_date => Date.today)
-  # views = profile.pageviews(:start_date => Date.today, :end_date => Date.today)
   begin
-    message << "#{profile.title}: #{views.first.visitors}/#{views.first.pageviews}\n"
+    message << "#{profile.title}: #{views.first.visitors}/#{views.first.pageviews} from "
   rescue
   end
+  isps = Domis.results(profile, :start_date => Date.today, :end_date => Date.today)
+  tr = isps.sort_by {|x| x.pageviews}.reverse
+  top_referrers = tr[0..2].map {|z| "#{z.network_domain} (#{z.pageviews})" unless z.nil?} 
+  message << top_referrers.join(', ') + "\n"
 end
 
 notif = Prowly::Notification.new(
