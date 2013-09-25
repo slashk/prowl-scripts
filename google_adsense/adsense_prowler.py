@@ -55,7 +55,7 @@ def prowl_message(message):
     config = yaml.load(f)
     f.close()
   except:
-    print "ERROR: Cannot open %s configuration file" % PROWL_FILE_NAME
+    print "ERROR: Cannot open %s configuration file" % FLAGS.prowl_api_key
     sys.exit(1)
 
   # prowl api info
@@ -87,7 +87,7 @@ def main(argv):
   # Build an authorized service object.
   http = httplib2.Http()
   http = credentials.authorize(http)
-  service = build('adsense', 'v1', http=http)
+  service = build('adsense', 'v1.2', http=http)
 
   # Traverse the Management hiearchy and print results.
   try:
